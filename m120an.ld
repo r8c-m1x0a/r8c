@@ -8,6 +8,8 @@
 /   @copyright	Copyright (C) 2015, 2017 Kunihito Hiramatsu @n
 /				Released under the MIT license @n
 /				https://github.com/hirakuni45/RX/blob/master/LICENSE
+/
+/   I/Oを直接アクセス可能なように定義IOを追加しています。(S.Hanai ruimo.uno@gmail.com)
 /======================================================================*/
 
 /* Default linker script, for normal executables */
