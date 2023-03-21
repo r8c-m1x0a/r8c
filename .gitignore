@@ -1,0 +1,6 @@
+.sconsign.dblite
+*.a
+r8c.log
+*~
+build
+r8c
