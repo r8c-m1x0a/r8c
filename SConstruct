@@ -43,7 +43,7 @@ Alias("compile", lib)
 
 testProg = testEnv.Program(
     f"build/test/{PROGRAM}", [
-        "build/test/main_test.cpp"
+        Glob("build/test/*.cpp"), Glob("build/test/*.c")
     ]
 )
 
