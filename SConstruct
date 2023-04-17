@@ -4,8 +4,6 @@ import os
 
 PROGRAM='r8c'
 
-BASE_DIR = Dir('.').srcnode().abspath
-
 skip = os.environ.get('SKIP')
 if skip is None:
     skip = []
@@ -14,7 +12,7 @@ else:
 
 commonEnv = Environment(
     ENV={'PATH' : os.environ['PATH']},
-    CPPPATH=[f"{BASE_DIR}/src"],
+    CPPPATH=["src"],
 )
 
 env = commonEnv.Clone(
@@ -26,33 +24,33 @@ env = commonEnv.Clone(
     CPPFLAGS='-Wall -Werror -Wno-unused-variable -fno-exceptions -Os -mcpu=r8c',
     LINK='m32c-elf-gcc',
 )
-env.VariantDir(f"{BASE_DIR}/build", f"{BASE_DIR}/src", duplicate=0)
+env.VariantDir("build", "src", duplicate=0)
 
 testEnv = commonEnv.Clone(
     LIBS=['pthread', 'libgtest', 'gcov'],
     CPPFLAGS='-g3 -coverage',
 )
-testEnv.VariantDir(f"{BASE_DIR}/build/test", f"{BASE_DIR}/src/test", duplicate=0)
+testEnv.VariantDir("build/test", "src/test", duplicate=0)
 
 lib = env.Library(
     f"{PROGRAM}.a", [
-        f"{BASE_DIR}/build/common/vect.c",
-        f"{BASE_DIR}/build/common/init.c",
-        f"{BASE_DIR}/build/common/start.s",
+        "build/common/vect.c",
+        "build/common/init.c",
+        "build/common/start.s",
     ],
 )
 Alias("compile", lib)
 
 testProg = testEnv.Program(
-    f"{BASE_DIR}/build/test/{PROGRAM}", [
-        f"{BASE_DIR}/build/test/main_test.cpp"
+    f"build/test/{PROGRAM}", [
+        "build/test/main_test.cpp"
     ]
 )
 
 TEST_ONLY = os.getenv('TEST_ONLY')
 test = testEnv.Command(
-    f"{BASE_DIR}/build/test/{PROGRAM}.log", testProg,
-    f"{BASE_DIR}/build/test/{PROGRAM} " + ("" if TEST_ONLY is None else f"--gtest_filter={TEST_ONLY}") + f" | tee {BASE_DIR}/build/test/{PROGRAM}.log"
+    f"build/test/{PROGRAM}.log", testProg,
+    f"build/test/{PROGRAM} " + ("" if TEST_ONLY is None else f"--gtest_filter={TEST_ONLY}") + f" | tee build/test/{PROGRAM}.log"
 )
 testEnv.AlwaysBuild(test)
 
