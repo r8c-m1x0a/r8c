@@ -12,7 +12,7 @@ else:
 
 commonEnv = Environment(
     ENV={'PATH' : os.environ['PATH']},
-    CPPPATH=["src"],
+    CPPPATH=["src/main"],
 )
 
 env = commonEnv.Clone(
@@ -24,7 +24,7 @@ env = commonEnv.Clone(
     CPPFLAGS='-Wall -Werror -Wno-unused-variable -fno-exceptions -Os -mcpu=r8c',
     LINK='m32c-elf-gcc',
 )
-env.VariantDir("build", "src", duplicate=0)
+env.VariantDir("build/main", "src/main", duplicate=0)
 
 testEnv = commonEnv.Clone(
     LIBS=['pthread', 'libgtest', 'gcov'],
@@ -34,9 +34,9 @@ testEnv.VariantDir("build/test", "src/test", duplicate=0)
 
 lib = env.Library(
     f"{PROGRAM}.a", [
-        "build/common/vect.c",
-        "build/common/init.c",
-        "build/common/start.s",
+        "build/main/common/vect.c",
+        "build/main/common/init.c",
+        "build/main/common/start.s",
     ],
 )
 Alias("compile", lib)
