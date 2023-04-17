@@ -2,7 +2,7 @@
 
 import os
 
-PROGRAM='r8c'
+NAME='r8c'
 
 skip = os.environ.get('SKIP')
 if skip is None:
@@ -33,7 +33,7 @@ testEnv = commonEnv.Clone(
 testEnv.VariantDir("build/test", "src/test", duplicate=0)
 
 lib = env.Library(
-    f"build/main/{PROGRAM}.a", [
+    f"build/main/{NAME}.a", [
         "build/main/common/vect.c",
         "build/main/common/init.c",
         "build/main/common/start.s",
@@ -42,22 +42,21 @@ lib = env.Library(
 Alias("compile", lib)
 
 testProg = testEnv.Program(
-    f"build/test/{PROGRAM}", [
+    f"build/test/{NAME}", [
         Glob("build/test/*.cpp"), Glob("build/test/*.c")
     ]
 )
 
 TEST_ONLY = os.getenv('TEST_ONLY')
 test = testEnv.Command(
-    f"build/test/{PROGRAM}.log", testProg,
-    f"build/test/{PROGRAM} " + ("" if TEST_ONLY is None else f"--gtest_filter={TEST_ONLY}") + f" | tee build/test/{PROGRAM}.log"
+    f"build/test/{NAME}.log", testProg,
+    f"build/test/{NAME} " + ("" if TEST_ONLY is None else f"--gtest_filter={TEST_ONLY}") + f" | tee build/test/{NAME}.log"
 )
-testEnv.AlwaysBuild(test)
 
 if "test" in skip:
     Alias("test", [])
 else:
-    Alias("test", [coverage_html])
+    Alias("test", [test])
 
 if "docs" in skip:
     Alias("docs", [])
