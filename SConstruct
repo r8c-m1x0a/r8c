@@ -6,6 +6,12 @@ PROGRAM='r8c'
 
 BASE_DIR = Dir('.').srcnode().abspath
 
+skip = os.environ.get('SKIP')
+if skip is None:
+    skip = []
+else:
+    skip = skip.split()
+
 commonEnv = Environment(
     ENV={'PATH' : os.environ['PATH']},
     CPPPATH=[f"{BASE_DIR}/src"],
@@ -35,6 +41,8 @@ lib = env.Library(
         f"{BASE_DIR}/build/common/start.s",
     ],
 )
+Alias("compile", lib)
+
 testProg = testEnv.Program(
     f"{BASE_DIR}/build/test/{PROGRAM}", [
         f"{BASE_DIR}/build/test/main_test.cpp"
@@ -47,6 +55,15 @@ test = testEnv.Command(
     f"{BASE_DIR}/build/test/{PROGRAM} " + ("" if TEST_ONLY is None else f"--gtest_filter={TEST_ONLY}") + f" | tee {BASE_DIR}/build/test/{PROGRAM}.log"
 )
 testEnv.AlwaysBuild(test)
-Alias("test", f"{BASE_DIR}/build/test/{PROGRAM}.log")
+
+if "test" in skip:
+    Alias("test", [])
+else:
+    Alias("test", [coverage_html])
+
+if "docs" in skip:
+    Alias("docs", [])
+else:
+    Alias("docs", docs)
 
 Default(lib)
